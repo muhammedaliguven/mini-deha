@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "338176672500",
+    "project_id": "minikdeha-a87a1",
+    "storage_bucket": "minikdeha-a87a1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:338176672500:android:59306982b28f9d479054a1",
+        "android_client_info": {
+          "package_name": "com.example.mini_deha"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAw82ByYeb9galMOmF1VffvXS60a9DKurQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
