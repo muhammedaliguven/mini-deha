@@ -58,6 +58,30 @@ class VideoCard extends StatelessWidget {
                         ),
                       ),
                     ),
+                  if (video.pedagogueApproved)
+                     Positioned(
+                       bottom: 8,
+                       left: 8,
+                       child: Container(
+                         padding: EdgeInsets.all(4),
+                         decoration: BoxDecoration(
+                           color: Colors.white,
+                           shape: BoxShape.circle,
+                           boxShadow: [
+                             BoxShadow(
+                               color: Colors.black26,
+                               blurRadius: 4,
+                               offset: Offset(0, 2),
+                             ),
+                           ],
+                         ),
+                         child: Icon(
+                           Icons.check_circle,
+                           color: Colors.green,
+                           size: 18,
+                         ),
+                       ),
+                     ),
                   Positioned(
                     bottom: 8,
                     right: 8,

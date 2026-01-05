@@ -10,11 +10,13 @@ class FirebaseService {
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Stream for "Daily Discovery" (Generic: just first 5 videos for now)
+  // Stream for "Daily Discovery" (Filtered: !isPremium && pedagogueApproved)
   Stream<List<VideoModel>> getDailyDiscovery() {
     return _firestore
         .collection('videos')
-        .limit(20) // Fetch a pool of videos
+        .where('is_premium', isEqualTo: false) // Free content only
+        .where('pedagogue_approved', isEqualTo: true) // Approved content only
+        .limit(10)
         .snapshots()
         .map((snapshot) {
       final allVideos = snapshot.docs.map((doc) {
@@ -26,7 +28,7 @@ class FirebaseService {
         }
       }).whereType<VideoModel>().toList();
       
-      // Shuffle and take 5
+      // Shuffle and take 5 for variety
       allVideos.shuffle();
       return allVideos.take(5).toList();
     });
@@ -50,6 +52,11 @@ class FirebaseService {
         }
       }).whereType<VideoModel>().toList();
     });
+  }
+
+  // Stream for Categories
+  Stream<QuerySnapshot> getCategories() {
+    return _firestore.collection('categories').snapshots();
   }
 
   // Stream for Parent Choices (Premium content)

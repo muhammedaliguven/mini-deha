@@ -12,6 +12,8 @@ class VideoModel {
   final String duration;
   final String ageRange;
 
+  final bool pedagogueApproved;
+
   VideoModel({
     required this.id,
     required this.title,
@@ -22,6 +24,7 @@ class VideoModel {
     required this.skillTag,
     required this.duration,
     required this.ageRange,
+    this.pedagogueApproved = false,
   });
 
   factory VideoModel.fromJson(Map<String, dynamic> json) {
@@ -35,6 +38,7 @@ class VideoModel {
       skillTag: json['skill_tag'] as String? ?? '',
       duration: json['duration'] as String? ?? '',
       ageRange: json['age_range'] as String? ?? '',
+      pedagogueApproved: json['pedagogue_approved'] as bool? ?? false,
     );
   }
 
@@ -49,6 +53,7 @@ class VideoModel {
       'skill_tag': skillTag,
       'duration': duration,
       'age_range': ageRange,
+      'pedagogue_approved': pedagogueApproved,
     };
   }
 

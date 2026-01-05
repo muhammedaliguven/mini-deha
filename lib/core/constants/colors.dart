@@ -9,6 +9,7 @@ class MiniDehaColors {
   // Accent Palette - Orange/Yellow (Energy, Intelligence)
   static const Color accent = Color(0xFFFFA500); // Orange
   static const Color accentLight = Color(0xFFFFD700); // Gold/Yellow
+  static const Color secondary = accent; // Alias for secondary actions
 
   // Neutral Palette
   static const Color background = Color(0xFFF5F5F5); // White Smoke

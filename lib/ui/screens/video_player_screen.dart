@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+import '../../data/services/local_storage_service.dart';
 
 class VideoPlayerScreen extends StatefulWidget {
   final String videoId;
+  final String skillTag; // Added for tracking
 
-  const VideoPlayerScreen({Key? key, required this.videoId}) : super(key: key);
+  const VideoPlayerScreen({
+    Key? key, 
+    required this.videoId,
+    required this.skillTag,
+  }) : super(key: key);
 
   @override
   State<VideoPlayerScreen> createState() => _VideoPlayerScreenState();
@@ -13,11 +19,14 @@ class VideoPlayerScreen extends StatefulWidget {
 
 class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   late YoutubePlayerController _controller;
+  bool _hasCountedScore = false;
+  final LocalStorageService _storage = LocalStorageService();
 
   @override
   void initState() {
     super.initState();
-    debugPrint("Playing video with ID: '${widget.videoId}'");
+    _storage.init(); // Ensure storage is ready
+    
     _controller = YoutubePlayerController(
       initialVideoId: widget.videoId,
       flags: const YoutubePlayerFlags(
@@ -29,6 +38,43 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
       ),
     );
   }
+
+  void _listener() async {
+    if (_controller.value.isReady && !_hasCountedScore) {
+      final duration = _controller.metadata.duration.inSeconds;
+      final position = _controller.value.position.inSeconds;
+
+      // Rule: If watched > 80% (0.8)
+      if (duration > 0 && (position / duration > 0.8)) {
+        _hasCountedScore = true;
+        
+        bool success = await _storage.incrementSkillScore(widget.skillTag, widget.videoId);
+        
+        if (!mounted) return;
+
+        if (success) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Harika! '${widget.skillTag}' puanın arttı! 🌟"),
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 2),
+            ),
+          );
+        } else {
+           ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Bu video daha önce puanlandırılmış 🎬"),
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: Colors.orange,
+              duration: Duration(seconds: 2),
+            ),
+          );
+        }
+      }
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +88,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
           handleColor: Colors.amberAccent,
         ),
         onReady: () {
-          _controller.addListener(() {});
+          _controller.addListener(_listener);
         },
       ),
       builder: (context, player) {
@@ -66,6 +112,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
 
   @override
   void dispose() {
+    _controller.removeListener(_listener);
     _controller.dispose();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
